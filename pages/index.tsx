@@ -1,6 +1,8 @@
-import { isToday } from 'date-fns';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useCalendar } from '../hooks/useCalendar';
+
+const ClientCalendar = dynamic(() => import('../components/Calendar'), { ssr: false });
 
 export default function Home() {
   const calendar = useCalendar();
@@ -14,35 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <div>
-          <h1>Calendar</h1>
-          <h4>{calendar.currentYear}</h4>
-          <h4>{calendar.currentMonth}</h4>
-          <button onClick={calendar?.setPreviousMonth}>Previous month</button>
-          <button onClick={calendar?.setNextMonth}>Next month</button>
-          {calendar.month.map((week, index) => {
-            return (
-              <div key={index}>
-                {week.map((day, j) => (
-                  <span
-                    key={j}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      padding: 10,
-                      fontSize: 16,
-                      border: '1px white solid',
-                      display: 'inline-block',
-                      backgroundColor: isToday(day) ? 'gray' : 'black',
-                    }}
-                  >
-                    {day.getDate()}
-                  </span>
-                ))}
-              </div>
-            );
-          })}
-        </div>
+        <ClientCalendar calendar={calendar} />
       </main>
     </>
   );
